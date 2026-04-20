@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataMentor — CSV Intelligence Platform</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <span class="logo">DataMentor</span>
+  <ul>
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#steps">Build Steps</a></li>
+    <li><a href="#evaluation">Evaluation</a></li>
+    <li><a href="#download">Skill</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <h1>CSV Intelligence<br /><span>in the Browser</span></h1>
+  <p>Upload any CSV, clean it automatically, run Python in-browser, and generate 10 chart types with domain-aware insights — no server required.</p>
+  <a class="cta-btn" href="../notebook-studio" target="_blank">Launch App →</a>
+</section>
+
+<!-- KPI bar -->
+<div id="kpis">
+  <div class="kpi">
+    <div class="num" data-target="10" data-suffix="">0</div>
+    <div class="label">Chart Types</div>
+  </div>
+  <div class="kpi">
+    <div class="num" data-target="14" data-suffix="">0</div>
+    <div class="label">Notebook Cells</div>
+  </div>
+  <div class="kpi">
+    <div class="num" data-target="100" data-suffix="%">0%</div>
+    <div class="label">In-Browser</div>
+  </div>
+  <div class="kpi">
+    <div class="num" data-target="0" data-suffix=" servers">0 servers</div>
+    <div class="label">Required</div>
+  </div>
+  <div class="kpi">
+    <div class="num" data-target="5" data-suffix=" tabs">0 tabs</div>
+    <div class="label">Workspace</div>
+  </div>
+</div>
+
+<!-- Features -->
+<section id="features">
+  <h2>Platform Features</h2>
+  <p class="sub">Everything you need to understand your data, in one place.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🧹</div>
+      <h3>Deterministic Cleaning</h3>
+      <p>Header normalisation, whitespace trim, duplicate removal, and type detection in one pass.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>10 Chart Types</h3>
+      <p>DistPlot, Pie, Violin, HeatMap, PairPlot, JointPlot, Bar, Histogram, Scatter, Line.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🐍</div>
+      <h3>Python Notebook</h3>
+      <p>14 guided cells powered by Pyodide — pandas, numpy, matplotlib, scipy all in-browser.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🧠</div>
+      <h3>Domain Analysis</h3>
+      <p>Knowledge-base engine recognises medical and financial columns and generates contextual insights.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔧</div>
+      <h3>AI Error Repair</h3>
+      <p>Rule-based repair detects common Python errors and suggests one-click fixes.</p>
+    </div>
+    <div class="card">
+      <div class="icon">☁️</div>
+      <h3>Cloud Workspace</h3>
+      <p>Google sign-in with Firestore persistence — or local storage without an account.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Build Steps -->
+<section id="steps">
+  <h2>Build Steps</h2>
+  <p class="sub">Click a step to see the implementation notes.</p>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">01</span> Initialize Next.js 16 + install dependencies</div>
+      <div class="step-detail">create-next-app with TypeScript, Tailwind 4, App Router, and Turbopack. Install chart.js, react-chartjs-2, chartjs-chart-matrix, papaparse, firebase, react-syntax-highlighter, and @dnd-kit.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">02</span> Firebase + layout</div>
+      <div class="step-detail">lib/firebase.ts initialises Firebase app with env vars. Root layout updates metadata title and global CSS sets the dark colour palette and scrollbar styles.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">03</span> Core lib files</div>
+      <div class="step-detail">chartDataProcessor.ts: detectColumnType (with numeric-string exclusion for dates), cleanCSV, processCSV, buildChartData. Supporting libs: chartTypes, chartConfig, advancedDataProcessors (KDE, histogram, skewness), visualizationAnalysis (COLUMN_KNOWLEDGE engine), visualizationStorage.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">04</span> Pyodide hook + chart components</div>
+      <div class="step-detail">usePyodide.ts loads Pyodide from CDN and pre-installs pandas/numpy/matplotlib/scipy. All 10 Universal chart components built with Chart.js. PairPlot uses responsive CSS Grid with aspect-ratio cells scaling maxHeight by column count.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">05</span> CsvVisualizations + NotebookViewer</div>
+      <div class="step-detail">CsvVisualizations offers STANDARD (sidebar nav) and CUSTOM (gallery picker) modes. Each chart panel has type-filtered column selectors. NotebookViewer renders 14 CodeCells; matplotlib output is captured as __IMG_BASE64__ and rendered inline.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">06</span> CsvNotebookBuilder orchestrator</div>
+      <div class="step-detail">5-tab workspace: Upload (drag-drop + samples), Cleaning (type table + row preview), Notebook, Visualizations, Account. Firebase auth + Firestore cloud save, local-storage fallback. Delete with confirmation dialog.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-title"><span class="step-num">07</span> GitHub Pages portal</div>
+      <div class="step-detail">Vanilla HTML/CSS/JS docs site with animated KPI counters, interactive step explorer, and Chart.js evaluation charts switchable between Academic / SME / Enterprise profiles.</div>
+    </div>
+    <div class="step-item active">
+      <div class="step-title"><span class="step-num">08</span> Final wiring + build verification</div>
+      <div class="step-detail">npm run build to catch TypeScript and ESLint errors. Fix any type assertions, missing imports, or unused variables. Confirm npm run dev starts cleanly and the upload → clean → notebook → visualize flow works end-to-end.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Evaluation Charts -->
+<section id="evaluation">
+  <h2>Evaluation</h2>
+  <p class="sub">Scores across platform modules — switch profiles to compare perspectives.</p>
+  <div class="profile-bar">
+    <button class="profile-btn active" data-profile="academic">Academic</button>
+    <button class="profile-btn" data-profile="sme">SME</button>
+    <button class="profile-btn" data-profile="enterprise">Enterprise</button>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h4>Usability Scores (0–10) by module</h4>
+      <canvas id="usabilityChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h4>Performance Scores (%) by module</h4>
+      <canvas id="performanceChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- Skill Download -->
+<section id="download">
+  <h2>Claude Skill</h2>
+  <p class="sub">Reproduce this entire platform using the DataMentor Claude Skill.</p>
+  <div class="dl-box">
+    <h3>datamentor-skill</h3>
+    <p>The skill is stored in your project at <code>.claude/skills/datamentor-skill/</code>.<br />
+    Invoke it inside Claude Code with <code>/datamentor-skill</code> to get the full build blueprint.</p>
+    <a class="cta-btn" href="https://github.com/ANIS151993/Notebook-Studio" target="_blank">View on GitHub →</a>
+  </div>
+</section>
+
+<footer>
+  <p>DataMentor · Built with Next.js 16, React 19, Pyodide, Firebase ·
+  <a href="https://github.com/ANIS151993/Notebook-Studio" style="color:#6366f1">GitHub</a></p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
