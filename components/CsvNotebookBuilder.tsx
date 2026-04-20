@@ -8,7 +8,7 @@ import CsvVisualizations from './CsvVisualizations';
 import NotebookViewer from './NotebookViewer';
 
 // Firebase imports — optional; gracefully degraded if config is missing
-import { auth, db, googleProvider } from '@/lib/firebase';
+import { getFirebaseAuth, getFirebaseDb, getGoogleProvider } from '@/lib/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth';
 import {
   collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy, serverTimestamp,
@@ -42,6 +42,8 @@ export default function CsvNotebookBuilder() {
   const authInitialized = useRef(false);
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
+    if (!auth) return;
     try {
       const unsub = onAuthStateChanged(auth, (u) => {
         setUser(u);
@@ -105,6 +107,12 @@ export default function CsvNotebookBuilder() {
   // ── Auth ────────────────────────────────────────────────────────────────
 
   async function signIn() {
+    const auth = getFirebaseAuth();
+    const googleProvider = getGoogleProvider();
+    if (!auth || !googleProvider) {
+      setAuthError('Sign-in is unavailable: Firebase is not configured.');
+      return;
+    }
     try {
       setAuthError('');
       await signInWithPopup(auth, googleProvider);
@@ -114,12 +122,16 @@ export default function CsvNotebookBuilder() {
   }
 
   async function handleSignOut() {
+    const auth = getFirebaseAuth();
+    if (!auth) return;
     try { await signOut(auth); } catch { /* ignore */ }
   }
 
   // ── Cloud persistence ───────────────────────────────────────────────────
 
   async function loadCloudWorks(uid: string) {
+    const db = getFirebaseDb();
+    if (!db) return;
     try {
       const q = query(collection(db, 'userWorks'), where('userId', '==', uid), orderBy('timestamp', 'desc'));
       const snap = await getDocs(q);
@@ -140,7 +152,8 @@ export default function CsvNotebookBuilder() {
 
   async function saveWork() {
     if (!cleanedCsv || !fileName) return;
-    if (user) {
+    const db = getFirebaseDb();
+    if (user && db) {
       try {
         await addDoc(collection(db, 'userWorks'), {
           userId: user.uid,
@@ -158,7 +171,8 @@ export default function CsvNotebookBuilder() {
 
   async function deleteWork(work: SavedWork) {
     if (!confirm(`Delete "${work.fileName}"?`)) return;
-    if (work.source === 'cloud' && work.cloudId) {
+    const db = getFirebaseDb();
+    if (work.source === 'cloud' && work.cloudId && db) {
       try {
         await deleteDoc(doc(db, 'userWorks', work.cloudId));
         setSavedWorks((prev) => prev.filter((w) => w.id !== work.id));

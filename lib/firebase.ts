@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, type Auth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,8 +11,39 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
+let _app: FirebaseApp | null = null;
+let _auth: Auth | null = null;
+let _db: Firestore | null = null;
+let _provider: GoogleAuthProvider | null = null;
+
+function getFirebaseApp(): FirebaseApp | null {
+  if (!isFirebaseConfigured) return null;
+  if (_app) return _app;
+  _app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  return _app;
+}
+
+export function getFirebaseAuth(): Auth | null {
+  if (_auth) return _auth;
+  const app = getFirebaseApp();
+  if (!app) return null;
+  _auth = getAuth(app);
+  return _auth;
+}
+
+export function getFirebaseDb(): Firestore | null {
+  if (_db) return _db;
+  const app = getFirebaseApp();
+  if (!app) return null;
+  _db = getFirestore(app);
+  return _db;
+}
+
+export function getGoogleProvider(): GoogleAuthProvider | null {
+  if (!isFirebaseConfigured) return null;
+  if (_provider) return _provider;
+  _provider = new GoogleAuthProvider();
+  return _provider;
+}
